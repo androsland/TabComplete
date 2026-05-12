@@ -55,7 +55,7 @@ src/
 | `tabComplete.multilineCompletion` | boolean | `true` | Allow multi-line completions |
 | `tabComplete.minTriggerLength` | number | `3` | Min chars on line before auto-triggering |
 | `tabComplete.modelTimeout` | number (ms) | `10000` | Abort request after this many ms |
-| `tabComplete.stopSequences` | string[] | `["\n\n"]` | Sequences that stop generation |
+| `tabComplete.stopSequences` | string[] | `[]` | Sequences that stop generation (whitespace-only entries are silently ignored) |
 | `tabComplete.enabledLanguages` | string[] | `[]` | Language IDs to enable (empty = all) |
 | `tabComplete.showLoadingIndicator` | boolean | `true` | Spinner in status bar during fetch |
 

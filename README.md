@@ -4,6 +4,49 @@ AI-powered inline code completions for VS Code, driven by your own [Anthropic AP
 
 ---
 
+## Changelog
+
+### [0.1.2] — 2026-05-12
+
+#### Fixed
+
+- **Stop sequences API error** — whitespace-only stop sequences (e.g. `"\n\n"`) are now filtered out before the request is sent. The Anthropic API requires at least one non-whitespace character per sequence; previously these caused a `stop_sequences: each stop sequence must contain non-whitespace` error on every request.
+- **Single-line completion enforcement** — when `multilineCompletion` is `false`, the response is now truncated at the first newline. Previously this relied on `"\n"` as a stop sequence, which the API silently rejected, so multi-line output could still come through.
+
+#### Changed
+
+- `tabComplete.stopSequences` default changed from `["\n\n"]` to `[]` to reflect that the former value was never a valid API sequence.
+
+---
+
+### [0.1.1] — 2026-05-12
+
+#### Changed
+
+- Migrated build tooling from `tsc` to **esbuild** for faster builds and a smaller packaged extension.
+- Removed the `@anthropic-ai/sdk` dependency in favour of a direct `fetch`-based API client, eliminating the SDK bundle from the extension.
+
+#### Added
+
+- Extension icon.
+- MIT license.
+
+---
+
+### [0.1.0] — 2026-05-12
+
+#### Added
+
+- Initial release of TabComplete.
+- `InlineCompletionItemProvider` registered for all file types with optional per-language filtering via `enabledLanguages`.
+- Fill-in-the-middle context: prefix and suffix around the cursor are both sent to the model.
+- Configurable debounce on auto-trigger; manual trigger via `Alt+\` bypasses debounce entirely.
+- LRU-style in-memory completion cache (max 200 entries, keyed on model + prefix + suffix).
+- Status bar item showing live state (on / off / fetching) with click-to-toggle.
+- Full settings surface: token budget, temperature, stop sequences, timeout, and more.
+
+---
+
 ## Features
 
 - **Ghost text completions** — suggestions render inline as dimmed text, exactly like GitHub Copilot
@@ -70,10 +113,10 @@ All settings are under the `tabComplete.*` namespace. Open **Settings** (`Ctrl+,
 | `tabComplete.maxCompletionTokens` | `number` | `256` | Maximum number of tokens the model can generate per completion. Lower values keep suggestions short and fast. |
 | `tabComplete.temperature` | `number` (0–1) | `0` | Sampling temperature. `0` = fully deterministic. Higher values produce more varied suggestions. |
 | `tabComplete.useCache` | `boolean` | `true` | Cache completions so that identical context reuses the previous result without an extra API call. Cleared on restart or via the Clear Cache command. |
-| `tabComplete.multilineCompletion` | `boolean` | `true` | Allow completions that span multiple lines. When `false`, the model stops at the first newline, producing single-line suggestions only. |
+| `tabComplete.multilineCompletion` | `boolean` | `true` | Allow completions that span multiple lines. When `false`, the completion is truncated at the first newline, producing single-line suggestions only. |
 | `tabComplete.minTriggerLength` | `number` | `0` | Minimum number of characters on the current line before auto-trigger fires. `0` triggers on empty lines too. Increase to suppress suggestions until you've started typing. |
 | `tabComplete.modelTimeout` | `number` (ms) | `10000` | Abort a completion request after this many milliseconds if no response has arrived. |
-| `tabComplete.stopSequences` | `string[]` | `["\n\n"]` | Strings that cause the model to stop generating. Add language-specific sequences (e.g. `"\nfunction "`) to prevent completions from running into the next declaration. |
+| `tabComplete.stopSequences` | `string[]` | `[]` | Strings that cause the model to stop generating. Add language-specific sequences (e.g. `"\nfunction "`) to prevent completions from running into the next declaration. Whitespace-only entries (e.g. `"\n\n"`) are ignored — the Anthropic API requires at least one non-whitespace character per sequence. |
 | `tabComplete.enabledLanguages` | `string[]` | `[]` | Language IDs to enable completions for. An empty array enables completions in **all** file types. Example: `["typescript", "python", "go"]`. |
 | `tabComplete.showLoadingIndicator` | `boolean` | `true` | Show a loading spinner in the status bar while a completion is being fetched. |
 
