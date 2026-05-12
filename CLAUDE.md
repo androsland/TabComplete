@@ -1,5 +1,9 @@
 # TabComplete — VSCode Extension
 
+## Rules
+
+ALWAYS use AskUserQuestions for input
+
 ## Project Overview
 
 **TabComplete** is a VSCode extension that provides AI-powered inline code completions (ghost text) using the Anthropic API. Completions appear at the cursor as dimmed text and are accepted with Tab.
