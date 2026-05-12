@@ -33,7 +33,7 @@ export function getConfig(): ExtensionConfig {
     multilineCompletion: cfg.get<boolean>('multilineCompletion', true),
     minTriggerLength: cfg.get<number>('minTriggerLength', 0),
     modelTimeout: cfg.get<number>('modelTimeout', 10000),
-    stopSequences: cfg.get<string[]>('stopSequences', ['\n\n']),
+    stopSequences: cfg.get<string[]>('stopSequences', []),
     enabledLanguages: cfg.get<string[]>('enabledLanguages', []),
     showLoadingIndicator: cfg.get<boolean>('showLoadingIndicator', true),
   };

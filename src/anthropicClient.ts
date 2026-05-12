@@ -15,9 +15,7 @@ export async function fetchCompletion(
   userMessage: string,
   signal: AbortSignal
 ): Promise<string> {
-  const stopSequences = config.multilineCompletion
-    ? config.stopSequences
-    : ['\n', ...config.stopSequences];
+  const stopSequences = config.stopSequences.filter(s => s.trim().length > 0);
 
   const response = await fetch(API_URL, {
     method: 'POST',
@@ -45,5 +43,10 @@ export async function fetchCompletion(
   const data: AnthropicResponse = await response.json();
   const block = data.content[0];
   if (!block || block.type !== 'text') return '';
-  return block.text;
+  const text = block.text;
+  if (!config.multilineCompletion) {
+    const newline = text.indexOf('\n');
+    return newline === -1 ? text : text.slice(0, newline);
+  }
+  return text;
 }
