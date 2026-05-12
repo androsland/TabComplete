@@ -1,0 +1,196 @@
+{
+  "name": "tabcomplete",
+  "displayName": "TabComplete - AI Autocomplete",
+  "description": "AI-powered inline code completions using the Anthropic API",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Machine Learning"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "tabComplete.triggerSuggestion",
+        "title": "TabComplete: Trigger Inline Suggestion"
+      },
+      {
+        "command": "tabComplete.toggleAutoTrigger",
+        "title": "TabComplete: Toggle Auto-Trigger"
+      },
+      {
+        "command": "tabComplete.setApiKey",
+        "title": "TabComplete: Set API Key"
+      },
+      {
+        "command": "tabComplete.clearCache",
+        "title": "TabComplete: Clear Completion Cache"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "tabComplete.triggerSuggestion",
+        "key": "alt+\\",
+        "mac": "alt+\\",
+        "when": "editorTextFocus && !editorReadonly"
+      }
+    ],
+    "configuration": {
+      "title": "TabComplete",
+      "properties": {
+        "tabComplete.model": {
+          "type": "string",
+          "default": "claude-haiku-4-5-20251001",
+          "enum": [
+            "claude-haiku-4-5-20251001",
+            "claude-sonnet-4-6",
+            "claude-opus-4-7"
+          ],
+          "enumDescriptions": [
+            "Claude Haiku 4.5 — fastest, lowest cost, best for inline completions",
+            "Claude Sonnet 4.6 — balanced speed and quality",
+            "Claude Opus 4.7 — highest quality, slower and more expensive"
+          ],
+          "description": "The Claude model to use for completions.",
+          "order": 2
+        },
+        "tabComplete.autoTrigger": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically trigger suggestions while typing.",
+          "order": 3
+        },
+        "tabComplete.debounceDelay": {
+          "type": "number",
+          "default": 350,
+          "minimum": 0,
+          "maximum": 5000,
+          "description": "Milliseconds to wait after the last keystroke before triggering a suggestion.",
+          "order": 4
+        },
+        "tabComplete.maxPromptTokens": {
+          "type": "number",
+          "default": 512,
+          "minimum": 64,
+          "maximum": 4096,
+          "description": "Maximum number of tokens to use for the prompt context (prefix + suffix combined).",
+          "order": 5
+        },
+        "tabComplete.prefixPercentage": {
+          "type": "number",
+          "default": 0.85,
+          "minimum": 0.1,
+          "maximum": 1,
+          "description": "Fraction of maxPromptTokens to allocate to the code before the cursor (prefix).",
+          "order": 6
+        },
+        "tabComplete.maxSuffixPercentage": {
+          "type": "number",
+          "default": 0.2,
+          "minimum": 0,
+          "maximum": 0.5,
+          "description": "Maximum fraction of maxPromptTokens to allocate to the code after the cursor (suffix).",
+          "order": 7
+        },
+        "tabComplete.maxCompletionTokens": {
+          "type": "number",
+          "default": 256,
+          "minimum": 16,
+          "maximum": 2048,
+          "description": "Maximum number of tokens to generate for each completion.",
+          "order": 8
+        },
+        "tabComplete.temperature": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Sampling temperature. 0 = deterministic, higher = more creative.",
+          "order": 9
+        },
+        "tabComplete.useCache": {
+          "type": "boolean",
+          "default": true,
+          "description": "Cache completions to avoid duplicate API calls for identical context.",
+          "order": 10
+        },
+        "tabComplete.multilineCompletion": {
+          "type": "boolean",
+          "default": true,
+          "description": "Allow multi-line completions. When false, completions stop at the first newline.",
+          "order": 11
+        },
+        "tabComplete.minTriggerLength": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Minimum number of characters on the current line before auto-triggering.",
+          "order": 12
+        },
+        "tabComplete.modelTimeout": {
+          "type": "number",
+          "default": 10000,
+          "minimum": 1000,
+          "maximum": 60000,
+          "description": "Request timeout in milliseconds before cancelling a completion.",
+          "order": 13
+        },
+        "tabComplete.stopSequences": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "\n\n"
+          ],
+          "description": "Custom stop sequences. The model stops generating when it produces any of these strings.",
+          "order": 14
+        },
+        "tabComplete.enabledLanguages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Language IDs to enable completions for. Leave empty to enable for all languages. Example: [\"typescript\", \"python\"]",
+          "order": 15
+        },
+        "tabComplete.showLoadingIndicator": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show a loading spinner in the status bar while a completion is being fetched.",
+          "order": 16
+        }
+      }
+    }
+  },
+  "publisher": "androsland",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.9.1",
+    "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0"
+  }
+}
